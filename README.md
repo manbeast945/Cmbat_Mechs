@@ -1,4 +1,4 @@
-# Hotline-Style Combat Sandbox
+#Combat Sandbox
 
 A small, standalone 2.5D-style combat room for Godot 4.7.2. Its room, characters, and weapons use drawn 2D placeholder shapes, so it needs no imported art or add-ons.
 
