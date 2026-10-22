@@ -5,8 +5,11 @@ class_name CombatEnemy
 @export var max_health := 70
 @export var contact_damage := 10
 @export var contact_cooldown_seconds := 0.9
+@export var enemy_color := Color(0.67, 0.30, 0.30)
+@export var stop_distance := 33.0
 
 var health := 70
+var visual_scale := Vector2.ONE
 var player: CombatPlayer
 var contact_cooldown_left := 0.0
 var stagger_left := 0.0
@@ -31,15 +34,18 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		return
 
-	var to_player := player.global_position - global_position
-	if to_player.length() > 31.0:
-		velocity = to_player.normalized() * move_speed
-	else:
-		velocity = Vector2.ZERO
+	_update_movement(delta)
 	move_and_slide()
 	if global_position.distance_to(player.global_position) <= 33.0 and contact_cooldown_left <= 0.0:
 		player.take_damage(contact_damage)
 		contact_cooldown_left = contact_cooldown_seconds
+
+func _update_movement(_delta: float) -> void:
+	var to_player := player.global_position - global_position
+	if to_player.length() > stop_distance:
+		velocity = to_player.normalized() * move_speed
+	else:
+		velocity = Vector2.ZERO
 
 func take_damage(amount: int, heavy := false, hit_direction := Vector2.ZERO, knockback_multiplier := 1.0) -> bool:
 	if health <= 0:
