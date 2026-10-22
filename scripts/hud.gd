@@ -5,6 +5,7 @@ var health_bar: ProgressBar
 var status_label: Label
 var hint_label: Label
 var defeat_overlay: ColorRect
+var aim_feedback: CombatAimFeedback
 var equipped_weapon_name := "MELEE"
 
 func _ready() -> void:
@@ -12,6 +13,9 @@ func _ready() -> void:
 	panel.position = Vector2(18.0, 16.0)
 	panel.add_theme_constant_override("separation", 6)
 	add_child(panel)
+	aim_feedback = CombatAimFeedback.new()
+	aim_feedback.name = "AimFeedback"
+	add_child(aim_feedback)
 
 	health_bar = ProgressBar.new()
 	health_bar.custom_minimum_size = Vector2(260.0, 22.0)
@@ -23,7 +27,7 @@ func _ready() -> void:
 	panel.add_child(status_label)
 
 	hint_label = Label.new()
-	hint_label.text = "WASD move   Mouse aim   LMB attack\n1 melee   2 gun   R restart after defeat"
+	hint_label.text = "WASD move   Mouse aim   LMB attack\n1 melee   2 gun"
 	hint_label.modulate = Color(0.78, 0.8, 0.81)
 	hint_label.add_theme_font_size_override("font_size", 14)
 	panel.add_child(hint_label)
@@ -43,6 +47,7 @@ func _ready() -> void:
 	defeat_overlay.add_child(message)
 
 func bind_player(player: CombatPlayer) -> void:
+	aim_feedback.bind_player(player)
 	player.health_changed.connect(_on_health_changed)
 	player.weapon_changed.connect(_on_weapon_changed)
 	player.defeated.connect(_on_defeated)

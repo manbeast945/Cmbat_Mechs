@@ -6,3 +6,6 @@ func use(_user: CharacterBody2D, _target: Vector2) -> void:
 
 func display_name() -> String:
 	return "WEAPON"
+
+func effective_range() -> float:
+	return INF

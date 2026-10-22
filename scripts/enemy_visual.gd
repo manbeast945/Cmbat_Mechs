@@ -8,6 +8,11 @@ func _ready() -> void:
 	enemy = get_parent() as CombatEnemy
 
 func _process(_delta: float) -> void:
+	if enemy != null:
+		var flash_ratio := enemy.hit_flash_left / (0.12 if enemy.reaction_strength >= 1.0 else 0.08)
+		modulate = Color.WHITE.lerp(Color(1.0, 0.52, 0.30), clampf(flash_ratio, 0.0, 1.0))
+		var stagger_ratio := enemy.stagger_left / (0.30 if enemy.reaction_strength >= 1.0 else 0.12)
+		scale = Vector2.ONE.lerp(Vector2(1.25, 0.78), clampf(stagger_ratio, 0.0, 1.0) * enemy.reaction_strength * 0.55)
 	queue_redraw()
 
 func _draw() -> void:

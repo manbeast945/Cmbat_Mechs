@@ -17,6 +17,8 @@ A small, standalone 2.5D-style combat room for Godot 4.7.2. Its room, characters
 - **2**: equip gun.
 - **R**: restart after defeat.
 
+Knife clicks form a light, light, heavy combo. Swings have wind-up and recovery; a click near recovery's end is buffered. The cursor shows the equipped weapon's range, and a separate outer marker appears only when a hit registers.
+
 ## Structure
 
 - `scenes/arena.tscn` and `scripts/arena.gd`: scene setup and combat test actors.
@@ -25,7 +27,8 @@ A small, standalone 2.5D-style combat room for Godot 4.7.2. Its room, characters
 - `scripts/weapon.gd`, `scripts/melee_weapon.gd`, and `scripts/gun_weapon.gd`: shared weapon entry point and separate weapon behavior.
 - `scenes/projectile.tscn` and `scripts/projectile.gd`: ranged projectile movement and collision.
 - `scenes/enemy.tscn`, `scripts/enemy.gd`, and `scripts/enemy_visual.gd`: simple pursuit, health, cooldown-limited contact damage, and separate placeholder drawing.
-- `scenes/hud.tscn` and `scripts/hud.gd`: player health, equipped weapon, controls, and defeat screen.
+- `scenes/hud.tscn`, `scripts/hud.gd`, and `scripts/aim_feedback.gd`: player health, equipped weapon, range crosshair, registered-hit marker, controls, and defeat screen.
+- `scripts/hit_effect.gd` and `scripts/combat_sounds.gd`: short impact visuals and generated placeholder swing and impact sounds.
 
 Health, damage, movement speed, attack range, and cooldowns are temporary exported values in the scripts and can be tuned in the Inspector.
 

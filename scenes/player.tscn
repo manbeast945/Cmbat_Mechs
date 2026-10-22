@@ -1,28 +1,32 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://c3fxs012x6o0j"]
 
-[ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
-[ext_resource type="Script" path="res://scripts/melee_weapon.gd" id="2_melee"]
-[ext_resource type="Script" path="res://scripts/gun_weapon.gd" id="3_gun"]
-[ext_resource type="Script" path="res://scripts/player_visual.gd" id="4_visual"]
+[ext_resource type="Script" uid="uid://b7fh6lmif3ljg" path="res://scripts/player.gd" id="1_player"]
+[ext_resource type="Script" uid="uid://bg1f635inkjqk" path="res://scripts/melee_weapon.gd" id="2_melee"]
+[ext_resource type="Script" uid="uid://bpe1i1uotfxms" path="res://scripts/gun_weapon.gd" id="3_gun"]
+[ext_resource type="Script" uid="uid://bhu1m4jgvpoug" path="res://scripts/player_visual.gd" id="4_visual"]
 
 [sub_resource type="CircleShape2D" id="PlayerBody"]
 radius = 15.0
 
-[node name="Player" type="CharacterBody2D"]
-collision_layer = 1
+[node name="Player" type="CharacterBody2D" unique_id=1854215064]
 collision_mask = 6
 script = ExtResource("1_player")
 
-[node name="Visual" type="Node2D" parent="."]
+[node name="Visual" type="Node2D" parent="." unique_id=2046248596]
 script = ExtResource("4_visual")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1966231633]
 shape = SubResource("PlayerBody")
 
-[node name="MeleeWeapon" type="Node2D" parent="."]
+[node name="MeleeWeapon" type="Node2D" parent="." unique_id=245377527]
 position = Vector2(0, -18)
 script = ExtResource("2_melee")
+attack_range = 60.0
+combo_reset_seconds = 0.6
 
-[node name="GunWeapon" type="Node2D" parent="."]
+[node name="WhooshAudio" type="AudioStreamPlayer2D" parent="MeleeWeapon" unique_id=1305196083]
+volume_db = -5.0
+
+[node name="GunWeapon" type="Node2D" parent="." unique_id=223167775]
 position = Vector2(0, -20)
 script = ExtResource("3_gun")

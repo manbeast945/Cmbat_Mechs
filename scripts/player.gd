@@ -4,6 +4,7 @@ class_name CombatPlayer
 signal health_changed(current: int, maximum: int)
 signal weapon_changed(weapon_name: String)
 signal defeated
+signal hit_confirmed(impact_position: Vector2, heavy: bool)
 
 @export var move_speed := 245.0
 @export var max_health := 100
@@ -68,4 +69,18 @@ func take_damage(amount: int) -> void:
 	if health == 0:
 		is_defeated = true
 		defeated.emit()
+
+func notify_combat_hit(impact_position: Vector2, heavy: bool) -> void:
+	hit_confirmed.emit(impact_position, heavy)
+	var impact_audio := AudioStreamPlayer2D.new()
+	impact_audio.stream = CombatSounds.make_impact()
+	impact_audio.volume_db = -4.0
+	get_parent().add_child(impact_audio)
+	impact_audio.global_position = impact_position
+	impact_audio.finished.connect(impact_audio.queue_free)
+	impact_audio.play()
+	var effect := CombatHitEffect.new()
+	effect.heavy = heavy
+	get_parent().add_child(effect)
+	effect.global_position = impact_position
 

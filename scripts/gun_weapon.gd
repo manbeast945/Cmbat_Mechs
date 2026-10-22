@@ -3,6 +3,7 @@ extends CombatWeapon
 const PROJECTILE_SCENE: PackedScene = preload("res://scenes/projectile.tscn")
 
 @export var cooldown_seconds := 0.24
+@export var effective_attack_range := 1248.0
 
 var cooldown_left := 0.0
 
@@ -24,6 +25,9 @@ func use(user: CharacterBody2D, target: Vector2) -> void:
 
 func display_name() -> String:
 	return "GUN"
+
+func effective_range() -> float:
+	return effective_attack_range
 
 func _draw() -> void:
 	draw_line(Vector2(8.0, 0.0), Vector2(27.0, 0.0), Color(0.18, 0.2, 0.23), 7.0, true)

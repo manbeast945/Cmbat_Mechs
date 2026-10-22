@@ -30,7 +30,9 @@ func _physics_process(delta: float) -> void:
 	if not hit.is_empty():
 		var collider: Object = hit.get("collider")
 		if collider is Node and collider.is_in_group("enemies"):
-			collider.take_damage(damage)
+			if collider.take_damage(damage, false, direction):
+				if owner_body != null and is_instance_valid(owner_body) and owner_body.has_method("notify_combat_hit"):
+					owner_body.notify_combat_hit(hit.get("position", next_position), false)
 		queue_free()
 		return
 	global_position = next_position
