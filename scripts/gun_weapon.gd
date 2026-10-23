@@ -9,6 +9,11 @@ var cooldown_left := 0.0
 
 func _process(delta: float) -> void:
 	cooldown_left = maxf(0.0, cooldown_left - delta)
+	var user := get_parent() as CharacterBody2D
+	if user != null:
+		var aim := get_global_mouse_position() - user.global_position
+		if aim.length_squared() > 0.0001:
+			rotation = aim.angle()
 	queue_redraw()
 
 func use(user: CharacterBody2D, target: Vector2) -> void:
@@ -30,5 +35,8 @@ func effective_range() -> float:
 	return effective_attack_range
 
 func _draw() -> void:
-	draw_line(Vector2(8.0, 0.0), Vector2(27.0, 0.0), Color(0.18, 0.2, 0.23), 7.0, true)
-	draw_line(Vector2(9.0, 0.0), Vector2(27.0, 0.0), Color(0.82, 0.84, 0.82), 3.0, true)
+	draw_rect(Rect2(5.0, -5.0, 9.0, 10.0), Color("332c30"))
+	draw_rect(Rect2(12.0, -4.0, 18.0, 8.0), Color("292b32"))
+	draw_rect(Rect2(14.0, -3.0, 14.0, 4.0), Color("aaa89a"))
+	draw_rect(Rect2(28.0, -2.0, 5.0, 4.0), Color("d3cda9"))
+	draw_rect(Rect2(7.0, 3.0, 5.0, 9.0), Color("6f5440"))

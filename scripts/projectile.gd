@@ -40,5 +40,6 @@ func _physics_process(delta: float) -> void:
 
 func _draw() -> void:
 	draw_set_transform(Vector2(0.0, -12.0).rotated(-rotation), 0.0, Vector2.ONE)
-	draw_circle(Vector2.ZERO, 5.0, Color(1.0, 0.88, 0.48))
-	draw_line(Vector2(-8.0, 0.0), Vector2.ZERO, Color(1.0, 0.48, 0.27, 0.7), 2.0, true)
+	draw_rect(Rect2(-3.0, -3.0, 8.0, 6.0), Color("ffae55"))
+	draw_rect(Rect2(0.0, -2.0, 5.0, 4.0), Color("ffe18a"))
+	draw_rect(Rect2(-8.0, -2.0, 6.0, 4.0), Color("e86d45", 0.75))

@@ -4,3 +4,6 @@
 
 [node name="Skeleton" instance=ExtResource("1_enemy")]
 enemy_color = Color(0.82, 0.84, 0.80, 1)
+
+[node name="Visual" parent="." index="0"]
+appearance = 1

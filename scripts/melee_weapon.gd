@@ -221,7 +221,7 @@ func _draw() -> void:
 		var trail_color := Color(0.69, 0.85, 0.94, fade * (0.18 if active_attack_step != 2 else 0.24))
 		var trail_start := trail_origins[index] + trail_directions[index] * _blade_base_distance()
 		var trail_end := trail_origins[index] + trail_directions[index] * attack_range
-		draw_line(to_local(trail_start), to_local(trail_end), trail_color, 2.0, true)
+		draw_line(to_local(trail_start), to_local(trail_end), trail_color, 2.0, false)
 	if phase != AttackPhase.IDLE:
 		var blade_color := Color(0.91, 0.95, 0.97, 1.0) if active_attack_step != 2 else Color(1.0, 1.0, 0.98, 1.0)
 		_draw_blade(blade_angle, blade_color, _active_blade_width(), true)
@@ -233,8 +233,8 @@ func _draw_blade(local_angle: float, color: Color, blade_width: float, show_hand
 	var base := direction * blade_base
 	var tip := direction * attack_range
 	if show_handle:
-		draw_line(direction * (blade_base - 10.0), base, Color(0.24, 0.16, 0.12, 1.0), 4.0, true)
-	draw_line(base, tip, color, blade_width, true)
+		draw_line(direction * (blade_base - 10.0), base, Color("63442d"), 4.0, false)
+	draw_line(base, tip, color, roundf(blade_width), false)
 	if show_handle:
-		draw_line(base + normal * 4.0, base - normal * 4.0, Color(0.72, 0.56, 0.35, 1.0), 2.0, true)
-		draw_line(base + direction * 2.0 + normal, tip - direction * 3.0 + normal, Color(1.0, 1.0, 1.0, 0.92), 1.0, true)
+		draw_line(base + normal * 4.0, base - normal * 4.0, Color("b28a50"), 2.0, false)
+		draw_line(base + direction * 2.0 + normal, tip - direction * 3.0 + normal, Color("ffffff", 0.92), 1.0, false)

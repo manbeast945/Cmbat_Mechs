@@ -1,6 +1,11 @@
 extends Node2D
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2(-544.0, 0.0), Vector2(1088.0, 52.0)), Color(0.28, 0.29, 0.29))
-	draw_rect(Rect2(Vector2(-560.0, -14.0), Vector2(1120.0, 16.0)), Color(0.50, 0.49, 0.45))
-	draw_line(Vector2(-560.0, 0.0), Vector2(560.0, 0.0), Color(0.68, 0.65, 0.59), 2.0)
+	draw_rect(Rect2(Vector2(-544.0, 0.0), Vector2(1088.0, 52.0)), Color("494847"))
+	for column in range(23):
+		var x := -544.0 + float(column * 48)
+		var offset := 24.0 if column % 2 == 1 else 0.0
+		draw_rect(Rect2(Vector2(x, 2.0), Vector2(46.0, 22.0)), Color("625f5b"))
+		draw_rect(Rect2(Vector2(x - offset, 26.0), Vector2(46.0, 24.0)), Color("585653"))
+	draw_rect(Rect2(Vector2(-560.0, -16.0), Vector2(1120.0, 16.0)), Color("81796e"))
+	draw_rect(Rect2(Vector2(-560.0, -16.0), Vector2(1120.0, 4.0)), Color("a09785"))
