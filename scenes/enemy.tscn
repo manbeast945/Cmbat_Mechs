@@ -4,11 +4,11 @@
 [ext_resource type="Script" uid="uid://bi2jsvtthlpch" path="res://scripts/enemy_visual.gd" id="2_visual"]
 
 [sub_resource type="CircleShape2D" id="EnemyBody"]
-radius = 17.0
+radius = 8.5
 
 [node name="Enemy" type="CharacterBody2D" unique_id=1363810007]
 collision_layer = 2
-collision_mask = 5
+collision_mask = 7
 script = ExtResource("1_enemy")
 
 [node name="Visual" type="Node2D" parent="." unique_id=2081138554]

@@ -21,7 +21,7 @@ func use(user: CharacterBody2D, target: Vector2) -> void:
 	cooldown_left = cooldown_seconds
 	var projectile = PROJECTILE_SCENE.instantiate()
 	user.get_parent().add_child(projectile)
-	projectile.launch(user.global_position + direction * 22.0, direction, user)
+	projectile.launch(user.global_position, direction, user)
 
 func display_name() -> String:
 	return "GUN"

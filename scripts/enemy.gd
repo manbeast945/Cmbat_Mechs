@@ -7,6 +7,7 @@ class_name CombatEnemy
 @export var contact_cooldown_seconds := 0.9
 @export var enemy_color := Color(0.67, 0.30, 0.30)
 @export var stop_distance := 33.0
+@export var player_clearance_distance := 26.0
 
 var health := 70
 var visual_scale := Vector2.ONE
@@ -42,7 +43,10 @@ func _physics_process(delta: float) -> void:
 
 func _update_movement(_delta: float) -> void:
 	var to_player := player.global_position - global_position
-	if to_player.length() > stop_distance:
+	if to_player.length() < player_clearance_distance:
+		var away_from_player := -to_player.normalized() if to_player.length_squared() > 0.0001 else Vector2.RIGHT
+		velocity = away_from_player * move_speed
+	elif to_player.length() > stop_distance:
 		velocity = to_player.normalized() * move_speed
 	else:
 		velocity = Vector2.ZERO
