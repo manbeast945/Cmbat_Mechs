@@ -9,7 +9,7 @@ A small, standalone 2.5D-style combat room for Godot 4.7.2. Its room, characters
 3. Open the project and press **F5** to run the configured arena scene.
 
 ## Controls
-
+                                                    MARK IS GAY
 - **WASD**: move.
 - **Mouse**: aim; the player faces the cursor.
 - **Left mouse button**: swing or fire once per click.
@@ -31,6 +31,8 @@ Knife clicks form a light, light, heavy combo. Swings have wind-up and recovery;
 - `scripts/hit_effect.gd` and `scripts/combat_sounds.gd`: short impact visuals and generated placeholder swing and impact sounds.
 
 Health, damage, movement speed, attack range, and cooldowns are temporary exported values in the scripts and can be tuned in the Inspector.
+
+
 
 ## Current limits
 
