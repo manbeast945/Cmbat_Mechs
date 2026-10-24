@@ -28,6 +28,7 @@ var blade_angle := 0.0
 var buffered_attack := false
 var buffered_target := Vector2.ZERO
 var hit_enemies: Dictionary = {}
+var hit_projectiles: Dictionary = {}
 var trail_origins: Array[Vector2] = []
 var trail_directions: Array[Vector2] = []
 var trail_ages: Array[float] = []
@@ -39,7 +40,7 @@ var blade_query := PhysicsShapeQueryParameters2D.new()
 func _ready() -> void:
 	whoosh_audio.stream = CombatSounds.make_whoosh()
 	blade_query.shape = blade_shape
-	blade_query.collision_mask = 8
+	blade_query.collision_mask = 24 # Enemy hurtboxes and deflectable projectiles.
 	blade_query.collide_with_bodies = false
 	blade_query.collide_with_areas = true
 
@@ -98,6 +99,7 @@ func _start_attack(user: CharacterBody2D, target: Vector2) -> void:
 	phase_duration = 0.16 if active_attack_step == 2 else 0.09
 	phase_left = phase_duration
 	hit_enemies.clear()
+	hit_projectiles.clear()
 	trail_origins.clear()
 	trail_directions.clear()
 	trail_ages.clear()
@@ -162,6 +164,18 @@ func _check_blade_contact(local_blade_angle: float) -> void:
 	blade_query.exclude = [user.get_rid()]
 	var hits := user.get_world_2d().direct_space_state.intersect_shape(blade_query, 32)
 	for hit in hits:
+		var projectile := hit.get("collider") as CombatProjectile
+		if projectile != null:
+			if projectile.owner_body == user:
+				continue
+			var projectile_id := projectile.get_instance_id()
+			if hit_projectiles.has(projectile_id):
+				continue
+			hit_projectiles[projectile_id] = true
+			var aim_direction := (get_global_mouse_position() - user.global_position).normalized()
+			if aim_direction.length_squared() > 0.001:
+				projectile.deflect(aim_direction, user)
+			continue
 		var hurtbox := hit.get("collider") as CombatAttackHurtbox
 		var enemy: CombatEnemy = hurtbox.enemy if hurtbox != null else null
 		if enemy == null or not enemy.is_in_group("enemies"):

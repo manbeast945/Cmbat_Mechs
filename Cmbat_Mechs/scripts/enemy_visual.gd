@@ -18,7 +18,10 @@ func _process(_delta: float) -> void:
 		var stagger_ratio := enemy.stagger_left / (0.30 if enemy.reaction_strength >= 1.0 else 0.12)
 		var stagger_scale := Vector2.ONE.lerp(Vector2(1.25, 0.78), clampf(stagger_ratio, 0.0, 1.0) * enemy.reaction_strength * 0.55)
 		var flinch_scale := Vector2.ONE.lerp(Vector2(1.08, 0.92), clampf(flash_ratio, 0.0, 1.0) * enemy.reaction_strength * 0.35)
-		scale = enemy.visual_scale * stagger_scale * flinch_scale
+		var facing_x := 1.0
+		if appearance == Appearance.SKELETON and enemy is CombatSkeleton:
+			facing_x = -1.0 if (enemy as CombatSkeleton).bow.aim_direction.x < 0.0 else 1.0
+		scale = Vector2(facing_x, 1.0) * enemy.visual_scale * stagger_scale * flinch_scale
 	queue_redraw()
 
 func _draw() -> void:

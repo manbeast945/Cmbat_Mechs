@@ -129,7 +129,7 @@ func _execute_spawn(arguments: String) -> void:
 
 	var world_position := get_viewport().get_canvas_transform().affine_inverse() * get_viewport().get_mouse_position()
 	var enemy_scene: PackedScene = enemy_scenes[enemy_name]
-	for _index in range(count):
+	for index in range(count):
 		var enemy := enemy_scene.instantiate() as CombatEnemy
 		if enemy == null:
 			_set_output("Could not create enemy '%s'." % enemy_name)
@@ -137,8 +137,16 @@ func _execute_spawn(arguments: String) -> void:
 		enemy.player = player
 		if enemy is CombatSlime:
 			(enemy as CombatSlime).skip_initial_spawn_spacing = true
-		enemy.position = actor_container.to_local(world_position)
 		actor_container.add_child(enemy)
+		# Bodies spawned at precisely one point can violently depenetrate each
+		# other on their first move. Keep each group close to the cursor in a
+		# compact spiral, with the first enemy exactly at the cursor.
+		var spawn_offset := Vector2.ZERO
+		if index > 0:
+			var spiral_angle := float(index) * 2.39996323
+			var spiral_radius := 22.0 * sqrt(float(index))
+			spawn_offset = Vector2.RIGHT.rotated(spiral_angle) * spiral_radius
+		enemy.global_position = world_position + spawn_offset
 	_set_output("Spawned %d %s at the cursor." % [count, enemy_name])
 
 func _on_command_input_gui_input(event: InputEvent) -> void:

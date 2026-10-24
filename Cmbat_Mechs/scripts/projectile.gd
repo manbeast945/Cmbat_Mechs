@@ -4,6 +4,9 @@ class_name CombatProjectile
 @export var speed := 780.0
 @export var damage := 25
 @export var lifetime_seconds := 1.6
+@export var can_hit_player := false
+@export var is_arrow := false
+@export var attack_source: StringName = &"bullet"
 
 var direction := Vector2.RIGHT
 var owner_body: Node2D
@@ -15,6 +18,7 @@ func launch(origin: Vector2, travel_direction: Vector2, firing_body: Node2D) -> 
 	owner_body = firing_body
 	lifetime_left = lifetime_seconds
 	rotation = direction.angle()
+	queue_redraw()
 
 func _physics_process(delta: float) -> void:
 	lifetime_left -= delta
@@ -28,20 +32,55 @@ func _physics_process(delta: float) -> void:
 	query.collide_with_areas = true
 	query.collide_with_bodies = true
 	if owner_body != null and is_instance_valid(owner_body):
-		query.exclude = [owner_body.get_rid()]
+		var excluded_rids: Array[RID] = [owner_body.get_rid()]
+		var owner_hurtbox := owner_body.find_child("AttackHurtbox", true, false) as CollisionObject2D
+		if owner_hurtbox != null:
+			excluded_rids.append(owner_hurtbox.get_rid())
+		query.exclude = excluded_rids
 	var hit := get_world_2d().direct_space_state.intersect_ray(query)
 	if not hit.is_empty():
 		var collider: Object = hit.get("collider")
+		if collider is CombatAttackHurtbox and (collider as CombatAttackHurtbox).enemy == owner_body:
+			# Defensive owner check: never let a projectile consume itself on its shooter's hurtbox.
+			global_position = next_position
+			return
+		var registered_hit := false
 		if collider is CombatAttackHurtbox:
 			var enemy := (collider as CombatAttackHurtbox).enemy
-			if enemy != null and enemy.is_in_group("enemies") and enemy.take_damage(damage, false, direction, 1.0, &"bullet"):
-				if owner_body != null and is_instance_valid(owner_body) and owner_body.has_method("notify_combat_hit"):
-					owner_body.notify_combat_hit(hit.get("position", next_position), false)
+			if enemy != null and enemy.is_in_group("enemies") and enemy != owner_body:
+				registered_hit = enemy.take_damage(damage, false, direction, 1.0, attack_source)
+		elif can_hit_player and collider is CombatPlayer and collider != owner_body:
+			(collider as CombatPlayer).take_damage(damage)
+			registered_hit = true
+		elif collider is CombatPlayer and collider == owner_body:
+			# Ignore the shooter if the launch point overlaps its player collider.
+			global_position = next_position
+			return
+		if registered_hit and owner_body != null and is_instance_valid(owner_body) and owner_body.has_method("notify_combat_hit"):
+			owner_body.notify_combat_hit(hit.get("position", next_position), false)
 		queue_free()
 		return
 	global_position = next_position
 
+func deflect(new_direction: Vector2, new_owner: Node2D) -> void:
+	if new_direction.length_squared() <= 0.001:
+		return
+	direction = new_direction.normalized()
+	owner_body = new_owner
+	can_hit_player = false
+	collision_mask = 12 # Walls and enemy attack hurtboxes.
+	attack_source = &"deflected"
+	rotation = direction.angle()
+	queue_redraw()
+
 func _draw() -> void:
+	if is_arrow:
+		# Draw the arrow along local +X; it remains visible while travelling.
+		draw_line(Vector2(-13.0, 0.0), Vector2(9.0, 0.0), Color("62452c"), 3.0)
+		draw_line(Vector2(8.0, 0.0), Vector2(13.0, 0.0), Color("d8d2bf"), 2.0)
+		draw_line(Vector2(-11.0, -1.0), Vector2(-15.0, -5.0), Color("e4e0d4"), 2.0)
+		draw_line(Vector2(-11.0, 1.0), Vector2(-15.0, 5.0), Color("e4e0d4"), 2.0)
+		return
 	draw_set_transform(Vector2(0.0, -12.0).rotated(-rotation), 0.0, Vector2.ONE)
 	draw_rect(Rect2(-3.0, -3.0, 8.0, 6.0), Color("ffae55"))
 	draw_rect(Rect2(0.0, -2.0, 5.0, 4.0), Color("ffe18a"))

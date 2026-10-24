@@ -1,9 +1,19 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/enemy.tscn" id="1_enemy"]
+[ext_resource type="Script" path="res://Cmbat_Mechs/scripts/skeleton_ai.gd" id="2_skeleton_ai"]
+[ext_resource type="Script" path="res://Cmbat_Mechs/scripts/skeleton_bow.gd" id="3_skeleton_bow"]
 
 [node name="Skeleton" instance=ExtResource("1_enemy")]
+script = ExtResource("2_skeleton_ai")
 enemy_color = Color(0.82, 0.84, 0.80, 1)
+move_speed = 67.0
+max_health = 55
+contact_damage = 5
 
 [node name="Visual" parent="." index="0"]
 appearance = 1
+
+[node name="Bow" type="Node2D" parent="."]
+position = Vector2(10, -27)
+script = ExtResource("3_skeleton_bow")
