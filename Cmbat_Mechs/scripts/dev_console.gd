@@ -69,6 +69,7 @@ func _build_ui() -> void:
 
 func _set_open(is_open: bool) -> void:
 	console_panel.visible = is_open
+	get_tree().paused = is_open
 	if player != null and is_instance_valid(player):
 		player.dev_console_open = is_open
 	if is_open:
