@@ -6,6 +6,7 @@ const SKELETON_SCENE: PackedScene = preload("res://scenes/skeleton.tscn")
 const ZOMBIE_SCENE: PackedScene = preload("res://scenes/zombie.tscn")
 const RUNNER_SCENE: PackedScene = preload("res://scenes/runner.tscn")
 const BRUTE_SCENE: PackedScene = preload("res://scenes/brute.tscn")
+const JUMPER_SCENE: PackedScene = preload("res://scenes/jumper.tscn")
 const HUD_SCENE: PackedScene = preload("res://scenes/hud.tscn")
 const DEV_CONSOLE_SCRIPT = preload("res://Cmbat_Mechs/scripts/dev_console.gd")
 
@@ -25,6 +26,7 @@ func _ready() -> void:
 		"runner": RUNNER_SCENE,
 		"brute": BRUTE_SCENE,
 		"skeleton": SKELETON_SCENE,
+		"jumper": JUMPER_SCENE,
 	}
 
 	var hud: CombatHUD = HUD_SCENE.instantiate()

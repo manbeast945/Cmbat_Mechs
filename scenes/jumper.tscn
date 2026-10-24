@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://b7iebpsrnxlxc"]
+
+[ext_resource type="PackedScene" uid="uid://rgw23ni1bknk" path="res://scenes/enemy.tscn" id="1_enemy"]
+[ext_resource type="Script" uid="uid://b6ol0q4cus0nq" path="res://Cmbat_Mechs/scripts/jumper.gd" id="2_jumper"]
+
+[node name="Jumper" unique_id=423345696 instance=ExtResource("1_enemy")]
+script = ExtResource("2_jumper")
+attack_trigger_range = 250.0
+charge_seconds = 0.6
+jump_speed = 360.0
+jump_height = 44.0
+landing_aoe_radius = 45.0
+landing_damage = 8
+post_landing_cooldown_seconds = 1.8
+landing_stagger_seconds = 0.5
+enemy_color = Color(0.78, 0.55, 0.28, 1)
+
+[node name="Visual" parent="." index="0" unique_id=2081138554]
+appearance = 4

@@ -52,7 +52,7 @@ func _build_ui() -> void:
 	console_panel.add_child(contents)
 
 	var instructions := Label.new()
-	instructions.text = "DEV CONSOLE  |  / or ` opens, Esc closes, Tab completes\nspawn <slime|zombie|runner|brute|skeleton> [count]\nweapon <name>"
+	instructions.text = "DEV CONSOLE  |  / or ` opens, Esc closes, Tab completes\nspawn <slime|zombie|runner|brute|skeleton|jumper> [count]\nweapon <name>"
 	instructions.add_theme_font_size_override("font_size", 14)
 	contents.add_child(instructions)
 

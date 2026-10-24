@@ -1,6 +1,6 @@
 extends Node2D
 
-enum Appearance { ZOMBIE, SKELETON, RUNNER, BRUTE }
+enum Appearance { ZOMBIE, SKELETON, RUNNER, BRUTE, JUMPER }
 
 @export var appearance := Appearance.ZOMBIE
 
@@ -13,6 +13,9 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if enemy != null:
+		var jumper := enemy as CombatJumper
+		var lift: float = jumper.visual_lift if jumper != null else 0.0
+		position = Vector2(0.0, -lift)
 		var flash_ratio := enemy.hit_flash_left / (0.12 if enemy.reaction_strength >= 1.0 else 0.08)
 		modulate = Color.WHITE.lerp(Color(1.0, 0.52, 0.30), clampf(flash_ratio, 0.0, 1.0))
 		var stagger_ratio := enemy.stagger_left / (0.30 if enemy.reaction_strength >= 1.0 else 0.12)
@@ -27,15 +30,50 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	if enemy == null:
 		return
-	draw_rect(Rect2(-17.0, 0.0, 34.0, 7.0), Color("292632", 0.54))
+	var jumper := enemy as CombatJumper
+	if jumper != null and jumper.landing_telegraph_visible:
+		_draw_jumper_telegraph(jumper)
+	var shadow_y: float = jumper.visual_lift if jumper != null else 0.0
+	draw_rect(Rect2(-17.0, shadow_y, 34.0, 7.0), Color("292632", 0.54))
 	if appearance == Appearance.SKELETON:
 		_draw_skeleton()
+	elif appearance == Appearance.JUMPER:
+		_draw_jumper()
 	else:
 		_draw_zombie()
 	draw_rect(Rect2(-18.0, -55.0, 36.0, 5.0), OUTLINE)
 	draw_rect(Rect2(-17.0, -54.0, 34.0, 3.0), Color("4a3038"))
 	var health_ratio := float(enemy.health) / float(enemy.max_health)
 	draw_rect(Rect2(-17.0, -54.0, 34.0 * health_ratio, 3.0), Color("d76352"))
+
+func _draw_jumper_telegraph(jumper: CombatJumper) -> void:
+	var center := to_local(jumper.landing_position)
+	var warning := Color("e9a34d", 0.82)
+	var inverse_scale := Vector2(1.0 / maxf(absf(scale.x), 0.001), 1.0 / maxf(absf(scale.y), 0.001))
+	draw_set_transform(center, 0.0, inverse_scale)
+	draw_arc(Vector2.ZERO, jumper.landing_aoe_radius, 0.0, TAU, 36, warning, 2.0, true)
+	draw_arc(Vector2.ZERO, 4.0, 0.0, TAU, 16, warning, 2.0, true)
+	draw_line(Vector2(-7.0, 0.0), Vector2(7.0, 0.0), warning, 1.5)
+	draw_line(Vector2(0.0, -7.0), Vector2(0.0, 7.0), warning, 1.5)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+func _draw_jumper() -> void:
+	var shell := enemy.enemy_color
+	var shell_light := shell.lightened(0.24)
+	draw_rect(Rect2(-14.0, -11.0, 11.0, 11.0), OUTLINE)
+	draw_rect(Rect2(3.0, -11.0, 11.0, 11.0), OUTLINE)
+	draw_rect(Rect2(-11.0, -9.0, 7.0, 7.0), Color("54483f"))
+	draw_rect(Rect2(6.0, -9.0, 7.0, 7.0), Color("54483f"))
+	draw_rect(Rect2(-17.0, -34.0, 34.0, 26.0), OUTLINE)
+	draw_rect(Rect2(-14.0, -32.0, 28.0, 21.0), shell)
+	draw_rect(Rect2(-20.0, -27.0, 8.0, 14.0), OUTLINE)
+	draw_rect(Rect2(12.0, -27.0, 8.0, 14.0), OUTLINE)
+	draw_rect(Rect2(-17.0, -25.0, 5.0, 10.0), shell_light)
+	draw_rect(Rect2(12.0, -25.0, 5.0, 10.0), shell)
+	draw_rect(Rect2(-12.0, -51.0, 24.0, 20.0), OUTLINE)
+	draw_rect(Rect2(-9.0, -48.0, 18.0, 14.0), shell_light)
+	draw_rect(Rect2(-5.0, -42.0, 3.0, 3.0), Color("352d34"))
+	draw_rect(Rect2(3.0, -42.0, 3.0, 3.0), Color("352d34"))
 
 func _draw_zombie() -> void:
 	var skin := enemy.enemy_color
