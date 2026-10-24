@@ -19,14 +19,16 @@ func _draw() -> void:
 	if player == null or not is_instance_valid(player):
 		return
 	var cursor := get_viewport().get_mouse_position()
-	var weapon: CombatWeapon = player.melee_weapon if player.active_weapon_index == 0 else player.gun_weapon
-	var range_origin := player.melee_weapon.global_position if player.active_weapon_index == 0 else player.global_position
+	var weapon := player.active_weapon
+	if weapon == null:
+		return
+	var range_origin := weapon.get_effective_range_origin(player)
 	var distance := player.get_global_mouse_position().distance_to(range_origin)
 	var in_range := distance <= weapon.effective_range()
 	var range_color := Color(0.43, 1.0, 0.67, 0.94) if in_range else Color(1.0, 0.43, 0.39, 0.9)
 	if in_range:
 		_draw_plus(cursor, range_color, 7.0, 2.0)
-	elif player.active_weapon_index == 0:
+	elif weapon == player.melee_weapon:
 		_draw_x(cursor, range_color, 7.0, 2.0)
 	else:
 		draw_circle(cursor, 2.0, range_color)

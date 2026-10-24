@@ -12,6 +12,7 @@ enum MovementPhase { WAITING, PREPARING, HOPPING }
 @export_range(0.0, 0.5, 0.01) var separation_strength := 0.35
 @export var minimum_spawn_spacing := 32.0
 
+var skip_initial_spawn_spacing := false
 var movement_phase := MovementPhase.WAITING
 var phase_time_left := 0.0
 var hop_direction := Vector2.RIGHT
@@ -25,7 +26,8 @@ func _ready() -> void:
 	super._ready()
 	add_to_group("slimes")
 	normal_color = enemy_color
-	_apply_spawn_spacing()
+	if not skip_initial_spawn_spacing:
+		_apply_spawn_spacing()
 	phase_time_left = randf_range(0.0, maxf(hop_interval_seconds, 0.0))
 
 func _update_movement(delta: float) -> void:

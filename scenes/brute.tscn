@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/zombie.tscn" id="1_zombie"]
+
+[node name="Brute" instance=ExtResource("1_zombie")]
+enemy_color = Color(0.48, 0.23, 0.23, 1)
+move_speed = 43.0
+max_health = 130
+attack_damage = 23
+attack_reach = 57.0
+attack_arc_degrees = 112.0
+attack_windup_seconds = 0.72
+attack_active_seconds = 0.17
+attack_recovery_seconds = 0.76
+attack_cooldown_seconds = 0.32
+surround_distance = 46.0
+separation_radius = 66.0
+light_knife_knockback = 64.0
+heavy_knife_knockback = 275.0
+bullet_knockback = 34.0
+light_stagger_resistance = 0.92
+light_stagger_seconds = 0.10
+heavy_stagger_seconds = 0.60
+
+[node name="Visual" parent="." index="0"]
+appearance = 3

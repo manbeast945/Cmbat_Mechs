@@ -9,3 +9,6 @@ func display_name() -> String:
 
 func effective_range() -> float:
 	return INF
+
+func get_effective_range_origin(user: CharacterBody2D) -> Vector2:
+	return user.global_position

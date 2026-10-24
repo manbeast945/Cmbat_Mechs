@@ -27,6 +27,7 @@ func use(user: CharacterBody2D, target: Vector2) -> void:
 	var projectile = PROJECTILE_SCENE.instantiate()
 	user.get_parent().add_child(projectile)
 	projectile.launch(user.global_position, direction, user)
+	user.get_tree().call_group("zombies", "hear_gunshot", user.global_position)
 
 func display_name() -> String:
 	return "GUN"

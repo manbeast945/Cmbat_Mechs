@@ -1,6 +1,6 @@
 extends Node2D
 
-enum Appearance { ZOMBIE, SKELETON }
+enum Appearance { ZOMBIE, SKELETON, RUNNER, BRUTE }
 
 @export var appearance := Appearance.ZOMBIE
 
@@ -17,7 +17,8 @@ func _process(_delta: float) -> void:
 		modulate = Color.WHITE.lerp(Color(1.0, 0.52, 0.30), clampf(flash_ratio, 0.0, 1.0))
 		var stagger_ratio := enemy.stagger_left / (0.30 if enemy.reaction_strength >= 1.0 else 0.12)
 		var stagger_scale := Vector2.ONE.lerp(Vector2(1.25, 0.78), clampf(stagger_ratio, 0.0, 1.0) * enemy.reaction_strength * 0.55)
-		scale = enemy.visual_scale * stagger_scale
+		var flinch_scale := Vector2.ONE.lerp(Vector2(1.08, 0.92), clampf(flash_ratio, 0.0, 1.0) * enemy.reaction_strength * 0.35)
+		scale = enemy.visual_scale * stagger_scale * flinch_scale
 	queue_redraw()
 
 func _draw() -> void:
@@ -35,21 +36,32 @@ func _draw() -> void:
 
 func _draw_zombie() -> void:
 	var skin := enemy.enemy_color
-	var cloth := Color("465849")
-	draw_rect(Rect2(-13.0, -8.0, 10.0, 8.0), OUTLINE)
-	draw_rect(Rect2(3.0, -8.0, 10.0, 8.0), OUTLINE)
-	draw_rect(Rect2(-10.0, -7.0, 6.0, 5.0), Color("6a5948"))
-	draw_rect(Rect2(6.0, -7.0, 6.0, 5.0), Color("6a5948"))
-	draw_rect(Rect2(-16.0, -32.0, 32.0, 25.0), OUTLINE)
-	draw_rect(Rect2(-13.0, -30.0, 26.0, 22.0), cloth)
-	draw_rect(Rect2(-19.0, -27.0, 6.0, 15.0), OUTLINE)
-	draw_rect(Rect2(13.0, -27.0, 6.0, 15.0), OUTLINE)
-	draw_rect(Rect2(-17.0, -25.0, 4.0, 11.0), skin.darkened(0.12))
-	draw_rect(Rect2(13.0, -25.0, 4.0, 11.0), skin)
+	var runner := appearance == Appearance.RUNNER
+	var brute := appearance == Appearance.BRUTE
+	var torso_half_width := 18.0 if brute else 11.0 if runner else 16.0
+	var head_half_width := 12.0 if brute else 8.0 if runner else 12.0
+	var cloth := Color("987642") if runner else Color("51443c") if brute else Color("465849")
+	var torso_left := -torso_half_width
+	var torso_width := torso_half_width * 2.0
+	var head_left := -head_half_width
+	var head_width := head_half_width * 2.0
+	draw_rect(Rect2(-14.0, -8.0, 11.0, 8.0), OUTLINE)
+	draw_rect(Rect2(3.0, -8.0, 11.0, 8.0), OUTLINE)
+	draw_rect(Rect2(-11.0, -7.0, 7.0, 5.0), Color("6a5948"))
+	draw_rect(Rect2(6.0, -7.0, 7.0, 5.0), Color("6a5948"))
+	draw_rect(Rect2(torso_left - 2.0, -32.0, torso_width + 4.0, 25.0), OUTLINE)
+	draw_rect(Rect2(torso_left, -30.0, torso_width, 22.0), cloth)
+	var arm_half_width := 4.0 if runner else 6.0
+	var left_arm_x := torso_left - arm_half_width
+	var right_arm_x := torso_half_width
+	draw_rect(Rect2(left_arm_x, -27.0, arm_half_width, 15.0), OUTLINE)
+	draw_rect(Rect2(right_arm_x, -27.0, arm_half_width, 15.0), OUTLINE)
+	draw_rect(Rect2(left_arm_x + 2.0, -25.0, maxf(2.0, arm_half_width - 3.0), 11.0), skin.darkened(0.12))
+	draw_rect(Rect2(right_arm_x + 2.0, -25.0, maxf(2.0, arm_half_width - 3.0), 11.0), skin)
 	draw_rect(Rect2(-3.0, -29.0, 6.0, 19.0), Color("a69c69"))
-	draw_rect(Rect2(-12.0, -49.0, 24.0, 21.0), OUTLINE)
-	draw_rect(Rect2(-9.0, -48.0, 18.0, 16.0), skin)
-	draw_rect(Rect2(-9.0, -52.0, 18.0, 6.0), Color("564333"))
+	draw_rect(Rect2(head_left, -49.0, head_width, 21.0), OUTLINE)
+	draw_rect(Rect2(head_left + 3.0, -48.0, head_width - 6.0, 16.0), skin)
+	draw_rect(Rect2(head_left + 3.0, -52.0, head_width - 6.0, 6.0), Color("564333"))
 	draw_rect(Rect2(-4.0, -42.0, 3.0, 3.0), Color("f0c653"))
 	draw_rect(Rect2(4.0, -42.0, 3.0, 3.0), Color("f0c653"))
 	draw_rect(Rect2(-3.0, -34.0, 8.0, 2.0), Color("704038"))

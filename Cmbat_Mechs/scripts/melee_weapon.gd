@@ -39,9 +39,9 @@ var blade_query := PhysicsShapeQueryParameters2D.new()
 func _ready() -> void:
 	whoosh_audio.stream = CombatSounds.make_whoosh()
 	blade_query.shape = blade_shape
-	blade_query.collision_mask = 2
-	blade_query.collide_with_bodies = true
-	blade_query.collide_with_areas = false
+	blade_query.collision_mask = 8
+	blade_query.collide_with_bodies = false
+	blade_query.collide_with_areas = true
 
 func _process(delta: float) -> void:
 	_update_combo_timer(delta)
@@ -162,7 +162,8 @@ func _check_blade_contact(local_blade_angle: float) -> void:
 	blade_query.exclude = [user.get_rid()]
 	var hits := user.get_world_2d().direct_space_state.intersect_shape(blade_query, 32)
 	for hit in hits:
-		var enemy := hit.get("collider") as CombatEnemy
+		var hurtbox := hit.get("collider") as CombatAttackHurtbox
+		var enemy: CombatEnemy = hurtbox.enemy if hurtbox != null else null
 		if enemy == null or not enemy.is_in_group("enemies"):
 			continue
 		var enemy_id := enemy.get_instance_id()
@@ -172,7 +173,7 @@ func _check_blade_contact(local_blade_angle: float) -> void:
 		var knockback_direction := blade_direction if away_from_player.length_squared() < 0.001 else away_from_player.normalized()
 		var heavy := active_attack_step == 2
 		var knockback_multiplier := 1.35 if heavy else 1.55
-		if enemy.take_damage(damage * (2 if heavy else 1), heavy, knockback_direction, knockback_multiplier):
+		if enemy.take_damage(damage * (2 if heavy else 1), heavy, knockback_direction, knockback_multiplier, &"knife"):
 			hit_enemies[enemy_id] = true
 			var along_blade := clampf((enemy.global_position - global_position).dot(blade_direction), blade_base, attack_range)
 			user.notify_combat_hit(global_position + blade_direction * along_blade, heavy)
@@ -212,6 +213,9 @@ func display_name() -> String:
 
 func effective_range() -> float:
 	return attack_range
+
+func get_effective_range_origin(_user: CharacterBody2D) -> Vector2:
+	return global_position
 
 func _draw() -> void:
 	if phase == AttackPhase.IDLE and trail_origins.is_empty():

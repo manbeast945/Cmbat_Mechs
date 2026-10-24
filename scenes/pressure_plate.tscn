@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://scripts/pressure_plate.gd" id="1_plate"]
+[ext_resource type="Script" path="res://Cmbat_Mechs/scripts/pressure_plate.gd" id="1_plate"]
 
 [node name="PressurePlate" type="Area2D"]
 collision_layer = 0

@@ -25,13 +25,16 @@ func _physics_process(delta: float) -> void:
 	var next_position := global_position + direction * speed * delta
 	var query := PhysicsRayQueryParameters2D.create(global_position, next_position, collision_mask)
 	query.hit_from_inside = true
+	query.collide_with_areas = true
+	query.collide_with_bodies = true
 	if owner_body != null and is_instance_valid(owner_body):
 		query.exclude = [owner_body.get_rid()]
 	var hit := get_world_2d().direct_space_state.intersect_ray(query)
 	if not hit.is_empty():
 		var collider: Object = hit.get("collider")
-		if collider is Node and collider.is_in_group("enemies"):
-			if collider.take_damage(damage, false, direction):
+		if collider is CombatAttackHurtbox:
+			var enemy := (collider as CombatAttackHurtbox).enemy
+			if enemy != null and enemy.is_in_group("enemies") and enemy.take_damage(damage, false, direction, 1.0, &"bullet"):
 				if owner_body != null and is_instance_valid(owner_body) and owner_body.has_method("notify_combat_hit"):
 					owner_body.notify_combat_hit(hit.get("position", next_position), false)
 		queue_free()

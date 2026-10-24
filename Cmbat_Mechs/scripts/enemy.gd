@@ -1,11 +1,14 @@
 extends CharacterBody2D
 class_name CombatEnemy
 
+enum AttackHitboxStyle { SILHOUETTE, CAPSULE }
+
 @export var move_speed := 72.0
 @export var max_health := 70
 @export var contact_damage := 10
 @export var contact_cooldown_seconds := 0.9
 @export var enemy_color := Color(0.67, 0.30, 0.30)
+@export var attack_hitbox_style: AttackHitboxStyle = AttackHitboxStyle.SILHOUETTE
 @export var stop_distance := 33.0
 @export var player_clearance_distance := 26.0
 
@@ -51,7 +54,7 @@ func _update_movement(_delta: float) -> void:
 	else:
 		velocity = Vector2.ZERO
 
-func take_damage(amount: int, heavy := false, hit_direction := Vector2.ZERO, knockback_multiplier := 1.0) -> bool:
+func take_damage(amount: int, heavy: bool = false, hit_direction: Vector2 = Vector2.ZERO, knockback_multiplier: float = 1.0, _attack_source: StringName = &"generic") -> bool:
 	if health <= 0:
 		return false
 	health = maxi(0, health - amount)

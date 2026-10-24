@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/zombie.tscn" id="1_zombie"]
+
+[node name="Runner" instance=ExtResource("1_zombie")]
+enemy_color = Color(0.86, 0.55, 0.28, 1)
+move_speed = 112.0
+max_health = 36
+attack_damage = 9
+attack_reach = 40.0
+attack_arc_degrees = 78.0
+attack_windup_seconds = 0.58
+attack_active_seconds = 0.12
+attack_recovery_seconds = 0.42
+attack_cooldown_seconds = 0.14
+surround_distance = 44.0
+separation_radius = 54.0
+light_knife_knockback = 54.0
+heavy_knife_knockback = 205.0
+bullet_knockback = 34.0
+light_stagger_resistance = 0.25
+light_stagger_seconds = 0.12
+heavy_stagger_seconds = 0.42
+
+[node name="Visual" parent="." index="0"]
+appearance = 2

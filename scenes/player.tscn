@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://c3fxs012x6o0j"]
 
-[ext_resource type="Script" uid="uid://b7fh6lmif3ljg" path="res://scripts/player.gd" id="1_player"]
-[ext_resource type="Script" uid="uid://bg1f635inkjqk" path="res://scripts/melee_weapon.gd" id="2_melee"]
-[ext_resource type="Script" uid="uid://bpe1i1uotfxms" path="res://scripts/gun_weapon.gd" id="3_gun"]
-[ext_resource type="Script" uid="uid://bhu1m4jgvpoug" path="res://scripts/player_visual.gd" id="4_visual"]
+[ext_resource type="Script" uid="uid://b7fh6lmif3ljg" path="res://Cmbat_Mechs/scripts/player.gd" id="1_player"]
+[ext_resource type="Script" uid="uid://bg1f635inkjqk" path="res://Cmbat_Mechs/scripts/melee_weapon.gd" id="2_melee"]
+[ext_resource type="Script" uid="uid://bpe1i1uotfxms" path="res://Cmbat_Mechs/scripts/gun_weapon.gd" id="3_gun"]
+[ext_resource type="Script" uid="uid://bhu1m4jgvpoug" path="res://Cmbat_Mechs/scripts/player_visual.gd" id="4_visual"]
 
 [sub_resource type="CircleShape2D" id="PlayerBody"]
 radius = 15.0

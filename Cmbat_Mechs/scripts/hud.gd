@@ -27,7 +27,7 @@ func _ready() -> void:
 	panel.add_child(status_label)
 
 	hint_label = Label.new()
-	hint_label.text = "WASD move   Mouse aim   LMB attack\n1 melee   2 gun"
+	hint_label.text = "WASD move   Mouse aim   LMB attack\n1 melee   2 gun   ` dev console"
 	hint_label.modulate = Color(0.78, 0.8, 0.81)
 	hint_label.add_theme_font_size_override("font_size", 14)
 	panel.add_child(hint_label)
