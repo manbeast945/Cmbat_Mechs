@@ -11,22 +11,23 @@ func _process(delta: float) -> void:
 	cooldown_left = maxf(0.0, cooldown_left - delta)
 	var user := get_parent() as CharacterBody2D
 	if user != null:
-		var aim := get_global_mouse_position() - user.global_position
+		var aim := get_global_mouse_position() - global_position
 		if aim.length_squared() > 0.0001:
-			rotation = aim.angle()
+			global_rotation = aim.angle()
 	queue_redraw()
 
 func use(user: CharacterBody2D, target: Vector2) -> void:
 	if cooldown_left > 0.0:
 		return
-	var direction := (target - user.global_position).normalized()
+	var direction := (target - global_position).normalized()
 	if direction == Vector2.ZERO:
 		direction = Vector2.RIGHT
-	rotation = direction.angle()
+	global_rotation = direction.angle()
+	var muzzle_position := to_global(Vector2(33.0, 0.0))
 	cooldown_left = cooldown_seconds
 	var projectile = PROJECTILE_SCENE.instantiate()
 	user.get_parent().add_child(projectile)
-	projectile.launch(user.global_position, direction, user)
+	projectile.launch(muzzle_position, direction, user)
 	user.get_tree().call_group("zombies", "hear_gunshot", user.global_position)
 
 func display_name() -> String:
