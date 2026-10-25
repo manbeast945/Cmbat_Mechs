@@ -28,16 +28,6 @@ var hurtbox_layer_before_jump := 0
 
 @onready var attack_hurtbox: CombatAttackHurtbox = $Visual/AttackHurtbox
 
-func _ready() -> void:
-	super._ready()
-	add_to_group("sticker_enemies")
-	for other: Node in get_tree().get_nodes_in_group("sticker_enemies"):
-		var other_sticker := other as CombatSticker
-		if other_sticker == null or other_sticker == self:
-			continue
-		add_collision_exception_with(other_sticker)
-		other_sticker.add_collision_exception_with(self)
-
 func _physics_process(delta: float) -> void:
 	contact_cooldown_left = maxf(0.0, contact_cooldown_left - delta)
 	stagger_left = maxf(0.0, stagger_left - delta)

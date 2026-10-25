@@ -1,7 +1,7 @@
 extends CombatEnemy
 class_name CombatSkeleton
 
-@export var detection_range := 430.0
+@export var detection_range := INF
 @export var shooting_range := 320.0
 @export var pursuit_memory_seconds := 2.5
 

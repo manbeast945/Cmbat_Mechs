@@ -3,7 +3,7 @@ class_name CombatZombie
 
 enum AttackState { APPROACHING, WINDUP, STRIKING, RECOVERY, STAGGERED }
 
-@export var detection_range := 390.0
+@export var detection_range := INF
 @export var hearing_range := 480.0
 @export var pursuit_memory_seconds := 3.2
 @export var attack_damage := 13
