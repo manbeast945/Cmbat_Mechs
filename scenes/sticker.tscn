@@ -1,0 +1,21 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemy.tscn" id="1_enemy"]
+[ext_resource type="Script" path="res://Cmbat_Mechs/scripts/sticker.gd" id="2_sticker"]
+
+[node name="Sticker" instance=ExtResource("1_enemy")]
+script = ExtResource("2_sticker")
+move_speed = 150.0
+max_health = 55
+enemy_color = Color(0.62, 0.52, 0.36, 1)
+leap_trigger_range = 110.0
+jump_speed = 520.0
+jump_height = 36.0
+latch_duration_seconds = 2.0
+latch_damage = 3
+latch_damage_interval_seconds = 0.5
+get_up_recovery_seconds = 0.5
+latch_contact_offset = 12.0
+
+[node name="Visual" parent="." index="0"]
+appearance = 5

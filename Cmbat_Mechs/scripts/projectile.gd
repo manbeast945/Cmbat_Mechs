@@ -11,6 +11,7 @@ class_name CombatProjectile
 var direction := Vector2.RIGHT
 var owner_body: Node2D
 var lifetime_left := 0.0
+var ignored_hurtboxes: Array[WeakRef] = []
 
 func launch(origin: Vector2, travel_direction: Vector2, firing_body: Node2D) -> void:
 	global_position = origin
@@ -31,12 +32,17 @@ func _physics_process(delta: float) -> void:
 	query.hit_from_inside = true
 	query.collide_with_areas = true
 	query.collide_with_bodies = true
+	var excluded_rids: Array[RID] = []
 	if owner_body != null and is_instance_valid(owner_body):
-		var excluded_rids: Array[RID] = [owner_body.get_rid()]
+		excluded_rids.append(owner_body.get_rid())
 		var owner_hurtbox := owner_body.find_child("AttackHurtbox", true, false) as CollisionObject2D
 		if owner_hurtbox != null:
 			excluded_rids.append(owner_hurtbox.get_rid())
-		query.exclude = excluded_rids
+	for ignored_ref: WeakRef in ignored_hurtboxes:
+		var ignored_hurtbox := ignored_ref.get_ref() as CollisionObject2D
+		if ignored_hurtbox != null:
+			excluded_rids.append(ignored_hurtbox.get_rid())
+	query.exclude = excluded_rids
 	var hit := get_world_2d().direct_space_state.intersect_ray(query)
 	if not hit.is_empty():
 		var collider: Object = hit.get("collider")
@@ -47,6 +53,10 @@ func _physics_process(delta: float) -> void:
 		var registered_hit := false
 		if collider is CombatAttackHurtbox:
 			var enemy := (collider as CombatAttackHurtbox).enemy
+			if enemy != null and enemy.has_method("should_projectile_pass_through") and enemy.should_projectile_pass_through():
+				ignored_hurtboxes.append(weakref(collider))
+				global_position = next_position
+				return
 			if enemy != null and enemy.is_in_group("enemies") and enemy != owner_body:
 				registered_hit = enemy.take_damage(damage, false, direction, 1.0, attack_source)
 		elif can_hit_player and collider is CombatPlayer and collider != owner_body:

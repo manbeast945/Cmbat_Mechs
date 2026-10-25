@@ -38,6 +38,14 @@ func _add_capsule() -> void:
 	add_child(collision)
 
 func _add_silhouette() -> void:
+	if appearance == 5:
+		_add_rect(Vector2(-19.0, -28.0), Vector2(39.0, 22.0))
+		_add_rect(Vector2(11.0, -40.0), Vector2(20.0, 18.0))
+		_add_rect(Vector2(12.0, -47.0), Vector2(8.0, 8.0))
+		_add_rect(Vector2(21.0, -46.0), Vector2(8.0, 8.0))
+		_add_rect(Vector2(-19.0, -12.0), Vector2(7.0, 12.0))
+		_add_rect(Vector2(9.0, -12.0), Vector2(7.0, 12.0))
+		return
 	if appearance == 1:
 		_add_rect(Vector2(-13.0, -8.0), Vector2(10.0, 8.0))
 		_add_rect(Vector2(3.0, -8.0), Vector2(10.0, 8.0))

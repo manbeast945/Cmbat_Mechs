@@ -1,6 +1,6 @@
 extends Node2D
 
-enum Appearance { ZOMBIE, SKELETON, RUNNER, BRUTE, JUMPER }
+enum Appearance { ZOMBIE, SKELETON, RUNNER, BRUTE, JUMPER, STICKER }
 
 @export var appearance := Appearance.ZOMBIE
 
@@ -14,7 +14,8 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if enemy != null:
 		var jumper := enemy as CombatJumper
-		var lift: float = jumper.visual_lift if jumper != null else 0.0
+		var sticker := enemy as CombatSticker
+		var lift: float = jumper.visual_lift if jumper != null else sticker.visual_lift if sticker != null else 0.0
 		position = Vector2(0.0, -lift)
 		var flash_ratio := enemy.hit_flash_left / (0.12 if enemy.reaction_strength >= 1.0 else 0.08)
 		modulate = Color.WHITE.lerp(Color(1.0, 0.52, 0.30), clampf(flash_ratio, 0.0, 1.0))
@@ -22,15 +23,20 @@ func _process(_delta: float) -> void:
 		var stagger_scale := Vector2.ONE.lerp(Vector2(1.25, 0.78), clampf(stagger_ratio, 0.0, 1.0) * enemy.reaction_strength * 0.55)
 		var flinch_scale := Vector2.ONE.lerp(Vector2(1.08, 0.92), clampf(flash_ratio, 0.0, 1.0) * enemy.reaction_strength * 0.35)
 		var facing_x := 1.0
+		var appearance_scale := Vector2.ONE
 		if appearance == Appearance.SKELETON and enemy is CombatSkeleton:
 			facing_x = -1.0 if (enemy as CombatSkeleton).bow.aim_direction.x < 0.0 else 1.0
-		scale = Vector2(facing_x, 1.0) * enemy.visual_scale * stagger_scale * flinch_scale
+		elif appearance == Appearance.STICKER and enemy is CombatSticker:
+			facing_x = -1.0 if sticker.facing_direction.x < 0.0 else 1.0
+			appearance_scale = Vector2.ONE * (0.48 if sticker.attack_state == CombatSticker.AttackState.LATCHED else 0.72)
+		scale = Vector2(facing_x, 1.0) * enemy.visual_scale * stagger_scale * flinch_scale * appearance_scale
 	queue_redraw()
 
 func _draw() -> void:
 	if enemy == null:
 		return
 	var jumper := enemy as CombatJumper
+	var sticker := enemy as CombatSticker
 	if jumper != null and jumper.landing_telegraph_visible:
 		_draw_jumper_telegraph(jumper)
 	var shadow_y: float = jumper.visual_lift if jumper != null else 0.0
@@ -39,6 +45,8 @@ func _draw() -> void:
 		_draw_skeleton()
 	elif appearance == Appearance.JUMPER:
 		_draw_jumper()
+	elif appearance == Appearance.STICKER:
+		_draw_sticker(sticker)
 	else:
 		_draw_zombie()
 	draw_rect(Rect2(-18.0, -55.0, 36.0, 5.0), OUTLINE)
@@ -74,6 +82,32 @@ func _draw_jumper() -> void:
 	draw_rect(Rect2(-9.0, -48.0, 18.0, 14.0), shell_light)
 	draw_rect(Rect2(-5.0, -42.0, 3.0, 3.0), Color("352d34"))
 	draw_rect(Rect2(3.0, -42.0, 3.0, 3.0), Color("352d34"))
+
+func _draw_sticker(sticker: CombatSticker) -> void:
+	var fur := enemy.enemy_color
+	var light_fur := fur.lightened(0.22)
+	var latched := sticker != null and sticker.attack_state == CombatSticker.AttackState.LATCHED
+	var crouched := latched or (sticker != null and sticker.attack_state == CombatSticker.AttackState.RECOVERY)
+	var body_y := -25.0 if not crouched else -19.0
+	draw_rect(Rect2(-19.0, -7.0, 12.0, 7.0), OUTLINE)
+	draw_rect(Rect2(8.0, -7.0, 12.0, 7.0), OUTLINE)
+	draw_rect(Rect2(-16.0, -6.0, 8.0, 4.0), fur.darkened(0.16))
+	draw_rect(Rect2(10.0, -6.0, 5.0, 4.0), fur)
+	draw_rect(Rect2(-19.0, body_y - 4.0, 39.0, 21.0), OUTLINE)
+	draw_rect(Rect2(-16.0, body_y, 33.0, 14.0), fur)
+	draw_rect(Rect2(-9.0, body_y + 2.0, 17.0, 7.0), light_fur)
+	draw_rect(Rect2(12.0, body_y - 12.0, 18.0, 16.0), OUTLINE)
+	draw_rect(Rect2(14.0, body_y - 10.0, 14.0, 12.0), light_fur)
+	draw_rect(Rect2(20.0, body_y - 7.0, 3.0, 3.0), Color("332832"))
+	draw_rect(Rect2(24.0, body_y - 3.0, 8.0, 4.0), Color("a85f4c"))
+	draw_rect(Rect2(13.0, body_y - 15.0, 7.0, 8.0), OUTLINE)
+	draw_rect(Rect2(22.0, body_y - 14.0, 7.0, 7.0), OUTLINE)
+	draw_rect(Rect2(15.0, body_y - 13.0, 4.0, 5.0), fur.darkened(0.2))
+	draw_rect(Rect2(23.0, body_y - 12.0, 4.0, 4.0), fur.darkened(0.2))
+	draw_rect(Rect2(-18.0, body_y + 12.0, 6.0, 10.0), OUTLINE)
+	draw_rect(Rect2(10.0, body_y + 12.0, 6.0, 10.0), OUTLINE)
+	draw_rect(Rect2(-17.0, body_y + 13.0, 3.0, 7.0), fur)
+	draw_rect(Rect2(11.0, body_y + 13.0, 3.0, 7.0), fur)
 
 func _draw_zombie() -> void:
 	var skin := enemy.enemy_color

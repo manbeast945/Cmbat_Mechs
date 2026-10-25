@@ -8,6 +8,9 @@ signal hit_confirmed(impact_position: Vector2, heavy: bool)
 
 @export var move_speed := 245.0
 @export var max_health := 100
+@export var dash_speed := 650.0
+@export var dash_duration := 0.16
+@export var dash_cooldown := 2.0
 
 var health := 100
 var is_defeated := false
@@ -16,6 +19,9 @@ var active_weapon: CombatWeapon
 var registered_weapons: Array[CombatWeapon] = []
 var was_attack_down := false
 var dev_console_open := false
+var dash_time_left := 0.0
+var dash_cooldown_left := 0.0
+var dash_direction := Vector2.ZERO
 
 @onready var melee_weapon: CombatWeapon = $MeleeWeapon
 @onready var gun_weapon: CombatWeapon = $GunWeapon
@@ -27,7 +33,7 @@ func _ready() -> void:
 	_sync_weapons()
 	health_changed.emit(health, max_health)
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if dev_console_open:
 		velocity = Vector2.ZERO
 		was_attack_down = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
@@ -42,7 +48,17 @@ func _physics_process(_delta: float) -> void:
 		float(Input.is_key_pressed(KEY_D)) - float(Input.is_key_pressed(KEY_A)),
 		float(Input.is_key_pressed(KEY_S)) - float(Input.is_key_pressed(KEY_W))
 	).normalized()
-	velocity = movement * move_speed
+	dash_cooldown_left = maxf(0.0, dash_cooldown_left - delta)
+	if dash_time_left > 0.0:
+		dash_time_left = maxf(0.0, dash_time_left - delta)
+		velocity = dash_direction * dash_speed
+	elif Input.is_key_pressed(KEY_SPACE) and movement != Vector2.ZERO and dash_cooldown_left <= 0.0:
+		dash_direction = movement
+		dash_time_left = maxf(0.0, dash_duration - delta)
+		dash_cooldown_left = maxf(0.0, dash_cooldown)
+		velocity = dash_direction * dash_speed
+	else:
+		velocity = movement * move_speed
 	move_and_slide()
 
 	if Input.is_key_pressed(KEY_1):

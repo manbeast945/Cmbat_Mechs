@@ -7,14 +7,20 @@ const ZOMBIE_SCENE: PackedScene = preload("res://scenes/zombie.tscn")
 const RUNNER_SCENE: PackedScene = preload("res://scenes/runner.tscn")
 const BRUTE_SCENE: PackedScene = preload("res://scenes/brute.tscn")
 const JUMPER_SCENE: PackedScene = preload("res://scenes/jumper.tscn")
+const STICKER_SCENE: PackedScene = preload("res://scenes/sticker.tscn")
 const HUD_SCENE: PackedScene = preload("res://scenes/hud.tscn")
 const DEV_CONSOLE_SCRIPT = preload("res://Cmbat_Mechs/scripts/dev_console.gd")
+
+@export_range(0.1, 4.0, 0.1) var prototype_time_scale := 2.0
 
 @onready var test_room: CombatTestRoom = $TestRoom
 
 var actor_layer: Node2D
+var previous_time_scale := 1.0
 
 func _ready() -> void:
+	previous_time_scale = Engine.time_scale
+	Engine.time_scale = prototype_time_scale
 	actor_layer = test_room.actor_container()
 	var player: CombatPlayer = PLAYER_SCENE.instantiate()
 	player.position = Vector2(190.0, 360.0)
@@ -27,6 +33,7 @@ func _ready() -> void:
 		"brute": BRUTE_SCENE,
 		"skeleton": SKELETON_SCENE,
 		"jumper": JUMPER_SCENE,
+		"sticker": STICKER_SCENE,
 	}
 
 	var hud: CombatHUD = HUD_SCENE.instantiate()
@@ -36,3 +43,6 @@ func _ready() -> void:
 	var console = DEV_CONSOLE_SCRIPT.new()
 	add_child(console)
 	console.configure(enemy_scenes, actor_layer, player)
+
+func _exit_tree() -> void:
+	Engine.time_scale = previous_time_scale
