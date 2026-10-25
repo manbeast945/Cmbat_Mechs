@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://bpe1i1uotfxms" path="res://Cmbat_Mechs/scripts/gun_weapon.gd" id="3_gun"]
 [ext_resource type="Script" uid="uid://bhu1m4jgvpoug" path="res://Cmbat_Mechs/scripts/player_visual.gd" id="4_visual"]
 [ext_resource type="Script" path="res://Cmbat_Mechs/scripts/shotgun_weapon.gd" id="5_shotgun"]
+[ext_resource type="Script" path="res://Cmbat_Mechs/scripts/rpg_weapon.gd" id="6_rpg"]
 
 [sub_resource type="CircleShape2D" id="PlayerBody"]
 radius = 15.0
@@ -35,3 +36,7 @@ script = ExtResource("3_gun")
 [node name="ShotgunWeapon" type="Node2D" parent="."]
 position = Vector2(0, -20)
 script = ExtResource("5_shotgun")
+
+[node name="RPGWeapon" type="Node2D" parent="."]
+position = Vector2(0, -20)
+script = ExtResource("6_rpg")
