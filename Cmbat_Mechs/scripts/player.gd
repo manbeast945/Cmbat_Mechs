@@ -62,9 +62,13 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 	if Input.is_key_pressed(KEY_1):
-		equip(0)
+		equip_weapon_by_name("melee")
 	elif Input.is_key_pressed(KEY_2):
-		equip(1)
+		equip_weapon_by_name("gun")
+	elif Input.is_key_pressed(KEY_3):
+		equip_weapon_by_name("shotgun")
+	elif Input.is_key_pressed(KEY_4):
+		equip_weapon_by_name("rpg")
 
 	var attack_down := Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 	if attack_down and not was_attack_down:
@@ -146,4 +150,3 @@ func notify_combat_hit(impact_position: Vector2, heavy: bool) -> void:
 	effect.heavy = heavy
 	get_parent().add_child(effect)
 	effect.global_position = impact_position
-

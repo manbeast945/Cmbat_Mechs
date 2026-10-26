@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/test_room.tscn" id="1_room"]
+[ext_resource type="Script" path="res://Cmbat_Mechs/scripts/wave_room.gd" id="2_waves"]
+
+[node name="WaveRoom" instance=ExtResource("1_room")]
+script = ExtResource("2_waves")
+door_side = 0

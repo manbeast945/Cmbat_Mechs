@@ -7,6 +7,7 @@ A small, standalone 2.5D-style combat room for Godot 4.7.2. Its room, characters
 1. Open Godot 4.7.2.
 2. Choose **Import** and select this folder's `project.godot` file.
 3. Open the project and press **F5** to run the configured arena scene.
+4. Walk through the opening in the right wall to enter the endless-wave room; use its left doorway to return. A new wave room starts at wave 1 each time you enter.
 
 ## Controls
                                                     MARK IS GAY
@@ -15,13 +16,16 @@ A small, standalone 2.5D-style combat room for Godot 4.7.2. Its room, characters
 - **Left mouse button**: swing or fire once per click.
 - **1**: equip melee.
 - **2**: equip gun.
+- **3**: equip shotgun.
+- **4**: equip RPG.
 - **R**: restart after defeat.
 
 Knife clicks form a light, light, heavy combo. Swings have wind-up and recovery; a click near recovery's end is buffered. The cursor shows the equipped weapon's range, and a separate outer marker appears only when a hit registers.
 
 ## Structure
 
-- `scenes/arena.tscn` and `scripts/arena.gd`: scene setup and combat test actors.
+- `scenes/arena.tscn` and `scripts/arena.gd`: persistent player/HUD setup and room switching.
+- `scenes/wave_room.tscn` and `scripts/wave_room.gd`: connected endless waves of the registered enemy types.
 - `scenes/test_room.tscn`, `scripts/test_room.gd`, `scripts/room_visuals.gd`, and `scripts/front_wall_visual.gd`: reusable room shell, wall collisions, floor, wall faces, and foreground depth sorting.
 - `scenes/player.tscn`, `scripts/player.gd`, and `scripts/player_visual.gd`: movement, aiming, health, weapon selection, and separate 2.5D-style placeholder drawing.
 - `scripts/weapon.gd`, `scripts/melee_weapon.gd`, and `scripts/gun_weapon.gd`: shared weapon entry point and separate weapon behavior.

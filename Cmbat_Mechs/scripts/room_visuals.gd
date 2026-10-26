@@ -1,6 +1,8 @@
 extends Node2D
 
 const FLOOR_RECT := Rect2(Vector2(128.0, 132.0), Vector2(1024.0, 440.0))
+const DOOR_CENTER_Y := 360.0
+const DOOR_OPENING_HEIGHT := 80.0
 const TILE_WIDTH := 32
 const TILE_HEIGHT := 24
 
@@ -21,6 +23,9 @@ func _draw() -> void:
 
 func _draw_floor() -> void:
 	draw_rect(FLOOR_RECT, GROUT)
+	# Continue the floor through either side doorway so the passage reads as open.
+	draw_rect(Rect2(Vector2(96.0, DOOR_CENTER_Y - 36.0), Vector2(32.0, 72.0)), GROUT)
+	draw_rect(Rect2(Vector2(1152.0, DOOR_CENTER_Y - 36.0), Vector2(32.0, 72.0)), GROUT)
 	var rows := int(FLOOR_RECT.size.y / TILE_HEIGHT)
 	var columns := int(FLOOR_RECT.size.x / TILE_WIDTH)
 	for row in range(rows):
@@ -43,18 +48,39 @@ func _draw_back_wall() -> void:
 	draw_rect(Rect2(Vector2(96.0, 128.0), Vector2(1088.0, 4.0)), STONE_DARK)
 
 func _draw_side_walls() -> void:
-	draw_rect(Rect2(Vector2(96.0, 132.0), Vector2(32.0, 456.0)), WALL_SIDE)
-	draw_rect(Rect2(Vector2(1152.0, 132.0), Vector2(32.0, 456.0)), WALL_SIDE)
+	var room := get_parent() as CombatTestRoom
+	var left_has_door := room != null and room.door_side == CombatTestRoom.DoorSide.LEFT
+	var right_has_door := room != null and room.door_side == CombatTestRoom.DoorSide.RIGHT
+	_draw_side_wall(96.0, left_has_door)
+	_draw_side_wall(1152.0, right_has_door)
 	_draw_brick_course(Vector2(80.0, 116.0), Vector2(48.0, 16.0), 24, 0)
 	_draw_brick_course(Vector2(1152.0, 116.0), Vector2(48.0, 16.0), 24, 0)
+	if left_has_door:
+		_draw_door_frame(96.0)
+	if right_has_door:
+		_draw_door_frame(1152.0)
+
+func _draw_side_wall(x: float, has_door: bool) -> void:
+	var opening_top := DOOR_CENTER_Y - DOOR_OPENING_HEIGHT * 0.5
+	var opening_bottom := DOOR_CENTER_Y + DOOR_OPENING_HEIGHT * 0.5
+	if has_door:
+		draw_rect(Rect2(Vector2(x, 132.0), Vector2(32.0, opening_top - 132.0)), WALL_SIDE)
+		draw_rect(Rect2(Vector2(x, opening_bottom), Vector2(32.0, 588.0 - opening_bottom)), WALL_SIDE)
+	else:
+		draw_rect(Rect2(Vector2(x, 132.0), Vector2(32.0, 456.0)), WALL_SIDE)
 	for row in range(19):
 		var y := 132.0 + float(row * 24)
-		var left_offset := 0.0 if row % 2 == 0 else 8.0
-		var right_offset := 0.0 if row % 2 == 0 else 8.0
-		draw_rect(Rect2(Vector2(96.0, y), Vector2(32.0, 23.0)), WALL_FACE)
-		draw_rect(Rect2(Vector2(96.0 + left_offset, y + 11.0), Vector2(12.0, 2.0)), Color("514f4d"))
-		draw_rect(Rect2(Vector2(1152.0, y), Vector2(32.0, 23.0)), WALL_FACE)
-		draw_rect(Rect2(Vector2(1152.0 + right_offset, y + 11.0), Vector2(12.0, 2.0)), Color("514f4d"))
+		if has_door and y >= opening_top and y < opening_bottom:
+			continue
+		var offset := 0.0 if row % 2 == 0 else 8.0
+		draw_rect(Rect2(Vector2(x, y), Vector2(32.0, 23.0)), WALL_FACE)
+		draw_rect(Rect2(Vector2(x + offset, y + 11.0), Vector2(12.0, 2.0)), Color("514f4d"))
+
+func _draw_door_frame(x: float) -> void:
+	var frame := Color("8a745d")
+	draw_rect(Rect2(Vector2(x - 2.0, DOOR_CENTER_Y - 43.0), Vector2(36.0, 5.0)), frame)
+	draw_rect(Rect2(Vector2(x - 2.0, DOOR_CENTER_Y + 38.0), Vector2(36.0, 5.0)), frame)
+	draw_rect(Rect2(Vector2(x + 28.0, DOOR_CENTER_Y - 40.0), Vector2(4.0, 80.0)), WALL_SIDE)
 
 func _draw_brick_course(position: Vector2, size: Vector2, brick_width: int, offset: int) -> void:
 	var brick_count := int(ceil((size.x + float(offset)) / float(brick_width)))
